@@ -18,6 +18,7 @@
 #include "driver/gpio.h"
 #include "driver/ledc.h"
 #include "esp_log.h"
+#include "tx335_treadmill.h"
 
 static const char *TAG = "TX335";
 
