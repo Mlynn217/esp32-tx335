@@ -43,7 +43,9 @@ static portMUX_TYPE motor_pulse_spinlock = portMUX_INITIALIZER_UNLOCKED;
  */
 static void IRAM_ATTR motor_pulse_isr_handler(void* arg)
 {
+    portENTER_CRITICAL_ISR(&motor_pulse_spinlock);
     motor_pulse_count++;
+    portEXIT_CRITICAL_ISR(&motor_pulse_spinlock);
 }
 
 /**

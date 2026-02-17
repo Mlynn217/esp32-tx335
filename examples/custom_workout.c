@@ -128,6 +128,9 @@ void simple_speed_control_example(void)
  */
 void pulse_monitoring_example(void)
 {
+    const uint32_t PULSE_SAMPLE_INTERVAL_MS = 10000;  // 10 seconds
+    const float PULSE_SAMPLE_INTERVAL_S = 10.0f;      // 10 seconds
+    
     ESP_LOGI(TAG, "Pulse monitoring example");
     
     set_treadmill_enable(true);
@@ -138,12 +141,13 @@ void pulse_monitoring_example(void)
     
     for (int i = 0; i < 6; i++) {
         uint32_t start_pulses = get_motor_pulse_count();
-        vTaskDelay(pdMS_TO_TICKS(10000));  // Wait 10 seconds
+        vTaskDelay(pdMS_TO_TICKS(PULSE_SAMPLE_INTERVAL_MS));
         uint32_t end_pulses = get_motor_pulse_count();
         
-        uint32_t pulses_per_10s = end_pulses - start_pulses;
-        ESP_LOGI(TAG, "Pulses in last 10s: %lu (avg: %.1f/sec)",
-                 pulses_per_10s, pulses_per_10s / 10.0f);
+        uint32_t pulses_per_interval = end_pulses - start_pulses;
+        ESP_LOGI(TAG, "Pulses in last %.0fs: %lu (avg: %.1f/sec)",
+                 PULSE_SAMPLE_INTERVAL_S, pulses_per_interval, 
+                 pulses_per_interval / PULSE_SAMPLE_INTERVAL_S);
     }
     
     set_treadmill_speed(0);
