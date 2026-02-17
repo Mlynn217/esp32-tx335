@@ -34,8 +34,9 @@ static const char *TAG = "TX335";
 #define LEDC_DUTY_RES           LEDC_TIMER_13_BIT   // 13-bit resolution
 #define LEDC_FREQUENCY          (5000)              // 5 kHz PWM frequency
 
-/* Motor pulse counter */
+/* Motor pulse counter and spinlock for thread-safe access */
 static volatile uint32_t motor_pulse_count = 0;
+static portMUX_TYPE motor_pulse_spinlock = portMUX_INITIALIZER_UNLOCKED;
 
 /**
  * @brief GPIO interrupt handler for motor pulse counting
@@ -180,7 +181,11 @@ void set_treadmill_enable(bool enable)
  */
 uint32_t get_motor_pulse_count(void)
 {
-    return motor_pulse_count;
+    uint32_t count;
+    portENTER_CRITICAL(&motor_pulse_spinlock);
+    count = motor_pulse_count;
+    portEXIT_CRITICAL(&motor_pulse_spinlock);
+    return count;
 }
 
 /**
@@ -188,7 +193,9 @@ uint32_t get_motor_pulse_count(void)
  */
 void reset_motor_pulse_count(void)
 {
+    portENTER_CRITICAL(&motor_pulse_spinlock);
     motor_pulse_count = 0;
+    portEXIT_CRITICAL(&motor_pulse_spinlock);
     ESP_LOGI(TAG, "Motor pulse count reset");
 }
 

@@ -68,11 +68,15 @@ void execute_workout(const workout_interval_t *program)
         set_treadmill_speed(interval->speed);
         
         // Run for duration, logging every 10 seconds
-        for (uint32_t elapsed = 0; elapsed < interval->duration; elapsed += 10) {
-            vTaskDelay(pdMS_TO_TICKS(10000));
+        uint32_t elapsed = 0;
+        while (elapsed < interval->duration) {
+            uint32_t wait_time = (interval->duration - elapsed) < 10 ? 
+                                 (interval->duration - elapsed) : 10;
+            vTaskDelay(pdMS_TO_TICKS(wait_time * 1000));
+            elapsed += wait_time;
             uint32_t pulses = get_motor_pulse_count();
             ESP_LOGI(TAG, "  Time: %lu/%lu sec, Pulses: %lu",
-                     elapsed + 10, interval->duration, pulses);
+                     elapsed, interval->duration, pulses);
         }
         
         interval_num++;
