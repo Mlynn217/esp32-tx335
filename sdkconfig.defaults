@@ -1,0 +1,21 @@
+# ESP32 TX335 Project Configuration
+#
+# This file contains default configuration settings for the project.
+# You can customize these settings using 'idf.py menuconfig'
+
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+CONFIG_ESPTOOLPY_FLASHMODE_DIO=y
+CONFIG_ESPTOOLPY_FLASHFREQ_40M=y
+
+# Enable FreeRTOS
+CONFIG_FREERTOS_HZ=1000
+
+# GPIO Settings
+CONFIG_GPIO_ESP32_SUPPORT_SWITCH_SLP_PULL=y
+
+# Log output
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+CONFIG_LOG_MAXIMUM_LEVEL_VERBOSE=y
+
+# Main task stack size
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=4096
